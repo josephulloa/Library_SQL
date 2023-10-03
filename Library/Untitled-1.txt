@@ -1,0 +1,583 @@
+-- database: c:\DB\Library\Rent.sqlite3
+
+-- Use the ▷ button in the top right corner to run the entire file.
+---------------------------tipos Usuarios----------------------------------
+CREATE TABLE UsersTypes (
+    UsersType_id INTEGER PRIMARY KEY NOT NULL, 
+    User_type varchar);
+
+INSERT INTO UsersTypes (User_type)
+    VALUES
+    ('admin'),
+    ('Clients');
+
+----------------------------------------------------
+
+---------------------------datos usuario-------------------------------
+CREATE TABLE UserData(
+    UserData_id INTEGER PRIMARY KEY NOT NULL, 
+    name varchar, 
+    Phone_Number INTEGER,
+    Email varchar);
+
+INSERT INTO UserData (name,Phone_Number,Email)
+    VALUES
+    ('jose',62658733,'jose@gmail.com'),
+    ('maria', 88690022,'maria@gmail.com') ;
+
+    
+INSERT INTO UserData (name,Phone_Number,Email)
+    VALUES
+    ('Emma Brown', 3333333333, 'emma.brown@example.com'),
+    ('Frank Taylor', 2222222222, 'frank.taylor@example.com');
+--------------------------------------------------------
+
+----------------------------tipos de pago---------------------------
+CREATE TABLE Payment_type(
+    Payment_type_id INTEGER PRIMARY KEY NOT NULL, 
+    Payment_type varchar);
+
+INSERT INTO Payment_type (Payment_type)
+    VALUES
+    ('Bills'),
+    ('Card') ;
+
+---------------------------------------------------------------
+
+----------------------------usuarios----------------------
+CREATE TABLE Users(
+    User_id INTEGER PRIMARY KEY NOT NULL,
+    Pass_Word varchar,
+    UserData_id INTEGER,
+    UsersType_id INTEGER,
+    Payment_type_id INTEGER,
+    FOREIGN KEY (UserData_id) REFERENCES UserData(UserData_id),
+    FOREIGN KEY (UsersType_id) REFERENCES UsersTypes(UsersType_id),
+    FOREIGN KEY (Payment_type_id) REFERENCES Payment_type(Payment_type_id)
+    );
+
+INSERT INTO Users (Pass_word,UserData_id,UsersType_id,Payment_type_id)
+    VALUES
+    (1234,1,1,2),
+    (4321,2,2,1) ;
+
+INSERT INTO Users (Pass_word,UserData_id,UsersType_id,Payment_type_id)
+    VALUES
+    (5678,3,2,1),
+     (8765,4,2,2);
+---------------------------------------------------------------
+
+-----------------------estado de los pedidos-------------------------------
+CREATE TABLE Order_State(
+    Order_State_id INTEGER PRIMARY KEY NOT NULL,
+    Order_State varchar);
+
+INSERT INTO Order_State (Order_State)
+    VALUES
+    ('Delivered'),
+    ('For rent'),
+    ('Pending Delivery');
+
+----------------------------------------------------
+
+---------------------------pedidos--------------------------
+CREATE TABLE Orders(
+    Orders_id INTEGER PRIMARY KEY NOT NULL,
+    Rental_Date INTEGER,
+    Rental_Time INTEGER,
+    Estimated_Delivery INTEGER,
+    Return_Date INTEGER,
+    Pay_Late_Fee INTEGER,
+    User_id INTEGER,
+    Order_State_id INTEGER,
+    FOREIGN KEY (User_id) REFERENCES Users(User_id),
+    FOREIGN KEY (Order_State_id) REFERENCES Order_State(Order_State_id));
+DROP TABLE Orders;
+
+INSERT INTO Orders
+(Rental_Date,Rental_Time,Estimated_Delivery,Return_Date,Pay_Late_Fee,User_id,Order_State_id)
+    VALUES
+    ('2023-09-27', 10, '2023-10-08', '2023-10-18', '$0', 2,  2),
+    ('2023-09-05', 7, '2023-09-12', '2023-10-19', '$10', 2,  3),
+    ('2023-09-10', 15, '2023-9-15', '2023-9-30', '0', 2,  1);
+
+----------------------------------------------------------------
+
+---------------------------Orden de libros------------------------
+CREATE TABLE BookOrder(
+    Books_id INTEGER,
+    Orders_id INTEGER,
+    FOREIGN KEY (Orders_id) REFERENCES Orders(Orders_id),
+    FOREIGN KEY (Books_id) REFERENCES Books(Books_id));
+
+
+INSERT INTO BookOrder(Books_id,Orders_id)
+    VALUES
+    (2,1),
+    (4,1),
+    (7,1),
+    (10,2),
+    (15,2),
+    (11,2),
+    (8,3),
+    (20,3),
+    (22,3);
+
+--------------------------------------------------------------
+
+-------------------------inventario----------------------------
+CREATE TABLE InventoryBooks (
+    Inventory_id INTEGER NOT NULL PRIMARY KEY,
+    QuantityAvailable INTEGER,
+    AmountRented INTEGER,
+    Total INTEGER
+);
+
+INSERT INTO InventoryBooks (QuantityAvailable,AmountRented,Total)
+    VALUES
+    (17,4,21),
+    (1,9,10),
+    (4,19,23),
+    (10,10,20),
+    (12,13,23),
+    (15, 8, 23),
+    (12, 9, 21),
+    (17, 6, 23),
+    (14, 10, 24),
+    (16, 5, 21),
+    (13, 7, 20),
+    (19, 4, 23),
+    (11, 12, 23),
+    (15, 9, 24),
+    (20, 3, 23),
+    (10, 11, 21),
+    (18, 7, 25),
+    (14, 8, 22),
+    (16, 9, 25),
+    (12, 11, 23),
+    (19, 6, 25),
+    (11, 10, 21),
+    (18, 5, 23),
+    (13, 8, 21),
+    (17, 7, 24);
+
+
+-----------------------------------------------------------------
+
+----------------------------------autores----------------------------
+CREATE TABLE Authors(
+    Author_id INTEGER PRIMARY KEY NOT NULL,
+    Author_name varchar);
+ 
+ DROP TABLE Authors;
+
+INSERT INTO Authors(Author_name)
+    VALUES
+    ('J.D. Salinger'),
+    ('J.R.R. Tolkien'),
+    ('Virginia Woolf'),
+    ('Ana Frank'),
+    ('Daniel Kahneman'),
+    ('Gabriel García Márquez'),
+    ('Homero'),
+    ('Miguel de Cervantes'),
+    ('Marcel Proust'),
+    ('Fyodor Dostoevsky'),
+    ('Franz Kafka'),
+    ('Harper Lee'),
+    ('Julio Cortázar'),
+    ('Jane Austen'),
+    ('Camila Läckberg'),
+    ('Charles Dickens'),
+    ('George Orwell'),
+    ('George R.R. Martin'),
+    ('Carlos Ruiz Zafón'),
+    ('Cormac McCarthy'),
+    ('J.K. Rowling'),
+    ('Antoine de Saint-Exupéry'),
+    ('Patrick Rothfuss'),
+    ('Margaret Mitchell'),
+    ('Dan Brown'); 
+-----------------------------------------------------------------
+
+------------------------------------libro autores----------------
+CREATE TABLE AuthorBooks(
+    Author_id INTEGER,
+    Books_id INTEGER,
+    FOREIGN KEY (Books_id) REFERENCES Books(Books_id),
+    FOREIGN KEY (Author_id) REFERENCES Authors(Author_id));
+
+DROP TABLE AuthorBooks;
+INSERT INTO AuthorBooks
+    VALUES
+    (1,1),
+    (2,2),
+    (3,3),
+    (4,4),
+    (5,5),
+    (6,6),
+    (7,7),
+    (8,8),
+    (9,9),
+    (10,10),
+    (11,11),
+    (12,12),
+    (13,13),
+    (14,14),
+    (15,15),
+    (16,16),
+    (17,17),
+    (18,18),
+    (19,19),
+    (20,20),
+    (21,21),
+    (22,22),
+    (23,23),
+    (24,24),
+    (25,25);
+
+------------------------------------------------------------
+
+-----------------------------------generos----------------------------
+CREATE TABLE Gender(
+    Gender_id INTEGER PRIMARY KEY NOT NULL,
+    Gender varchar);
+ 
+ INSERT INTO Gender(Gender)
+    VALUES
+    ('Fiction'),
+    ('Epic'),
+    ('Romance'),
+    ('Science Fiction'),
+    ('Non Fiction'),
+    ('History'),
+    ('Mistery'),
+    ('Horror'),
+    ('Love'),
+    ('Paranormal'),
+    ('Thriller'),
+    ('Comedy'),
+    ('Fantasy');
+
+
+-------------------------------------------------------------------
+
+---------------------------------genero libros---------------------
+CREATE TABLE GenderBooks(
+    Gender_id INTEGER,
+    Books_id INTEGER,
+    FOREIGN KEY (Books_id) REFERENCES Books(Books_id),
+    FOREIGN KEY (Gender_id) REFERENCES Gender(Gender_id));
+DROP TABLE Gender;
+INSERT INTO GenderBooks
+    VALUES
+    (1,1),
+    (13,2),
+    (1,3),
+    (5,4),
+    (5,5),
+    (1,6),
+    (2,7),
+    (1,8),
+    (1,9),
+    (1,10),
+    (1,11),
+    (1,12),
+    (1,13),
+    (1,14),
+    (1,15),
+    (1,16),
+    (1,17),
+    (13,18),
+    (1,19),
+    (1,20),
+    (13,21),
+    (1,22),
+    (13,23),
+    (1,24),
+    (1,25);
+
+---------------------------------------------------------------
+
+------------------------------Libros------------------------
+CREATE TABLE Books(
+    Books_id INTEGER PRIMARY KEY NOT NULL,
+    Names varchar ,
+    PublicationDate varchar ,
+    Description varchar,
+    Rent_value varchar,
+    ISBN varchar,
+    Feedback_id INTEGER,
+    Inventory_id INTEGER,
+    FOREIGN KEY (Feedback_id) REFERENCES FeedBack(Feedback_id),
+    FOREIGN KEY (Inventory_id) REFERENCES InventoryBooks(Inventory_id)
+    );
+
+ 
+DROP TABLE Books;
+
+INSERT INTO Books (Names,PublicationDate,Description,Rent_value,ISBN,Feedback_id,Inventory_id)
+    VALUES
+    ('El Guardián entre el Centeno',  '1951-07-16', 'Una novela de iniciación que explora temas de alienación adolescente y la pérdida de la inocencia.','$30','978-0-316-76948-0',2,1),
+    ('El Hobbit', '1937-09-21', 'Una novela de fantasía que sigue el viaje de Bilbo Bolsón en su búsqueda por recuperar un tesoro guardado por un dragón.','$25','978-84-450-0155-6',1,2),
+    ('Hacia el Faro',  '1927-05-05', 'Una novela experimental que profundiza en las complejidades de la conciencia humana y el paso del tiempo.','$28','978-84-204-2266-2',2,3),
+    ('El Diario de Ana Frank',  '1947-06-25', 'El diario personal de Ana Frank, una adolescente judía que se escondió de los nazis durante la Segunda Guerra Mundial.','$35','978-84-663-0317-2',1,4),
+    ('Pensar rápido, pensar despacio',  '2011-10-25', 'Un libro que explora los dos sistemas que gobiernan los procesos de pensamiento y la toma de decisiones humanas.','$30','978-84-493-2822-0',2,5),
+    ('Cien años de soledad', '1967-05-30', 'Una novela que narra la historia de la familia Buendía en Macondo, explorando la soledad y el amor a lo largo de generaciones.','$20','978-84-376-0175-5',2,6),
+    ('La Odisea', 'Siglo VIII a.C.', 'Un poema épico que relata el viaje de Ulises de regreso a Ítaca después de la Guerra de Troya.','$27','978-84-9104-221-6',2,7),
+    ('Don Quijote de la Mancha', '1605', 'Una sátira que sigue las aventuras del caballero loco Don Quijote y su fiel escudero Sancho Panza.','$25','978-84-376-0152-6',1,8),
+    ('En busca del tiempo perdido', '1913-1927', 'Una monumental obra que explora la memoria, la introspección y la sociedad francesa a finales del siglo XIX y principios del XX.','$26','978-84-376-0150-2',2,9),
+    ('Crimen y castigo', '1866', 'Una novela psicológica que sigue la vida de Raskólnikov, un estudiante que comete un asesinato y lucha con su culpabilidad.','$28','978-84-9816-718-1',2,10),
+    ('La Metamorfosis', '1915', 'Un relato en el que el protagonista se despierta un día transformado en un insecto, explorando la alienación y la identidad.','$25','978-84-670-0768-7',2,11),
+    ('Matar a un ruiseñor', '1960', 'Un relato que aborda el racismo y la injusticia en el sur de Estados Unidos, contado a través de los ojos de una niña.','$27','978-84-9942-594-2',1,12),
+    ('Rayuela', '1963', 'Una novela experimental en la que el lector puede elegir diferentes órdenes para leer los capítulos, invitando a la interacción.','$32','978-84-204-5183-9',3,13),
+    ('Orgullo y prejuicio', '1813', 'Una novela que examina las expectativas sociales, el matrimonio y el amor a través de la historia de Elizabeth Bennet.','$26','978-84-9181-346-2',2,14),
+    ('Crimen en directo', '2005', 'Un thriller que se desarrolla en un pequeño pueblo sueco y sigue la investigación de un asesinato.','$30','978-84-08-23656-5',1,15),
+    ('Historia de dos ciudades', '1859', 'Una novela que se sitúa en la época de la Revolución Francesa y explora la lucha por la justicia y la redención.','$32','978-84-9104-008-3',1,16),
+    ('1984', '1949-06-08', 'Una novela distópica que representa una sociedad totalitaria y explora los peligros de la vigilancia masiva y el control del pensamiento.','$23','978-0-452-28423-4',1,17),
+    ('Canción de hielo y fuego: Juego de tronos',  '1996', 'El inicio de una saga épica que combina elementos de fantasía, política y traición.','$36','978-84-666-4473-4',2,18),
+    ('La Sombra del Viento', '2001', 'Una novela que sigue la vida de un joven que descubre un libro en La Sempere & Sons Bookshop y se convierte en parte de una trama literaria misteriosa.','$28','978-84-08-07140-9',3,19),
+    ('La Carretera', '2006', 'Una novela postapocalíptica que sigue el viaje de un padre y su hijo en un mundo desolado y peligroso.','$20','978-84-339-7121-4',2,20),
+    ('Harry Potter y la piedra filosofal', '1997', 'El primer libro de la saga de Harry Potter, que sigue las aventuras de un joven mago en la escuela de magia de Hogwarts.','$24','978-84-9838-158-8',2,21),
+    ('El Principito', '1943', 'Un cuento poético que narra las experiencias de un joven príncipe que viaja de planeta en planeta.','$28','978-84-206-2689-4',1,22),
+    ('El nombre del viento', '2007', 'El primero de una trilogía que sigue la vida de Kvothe, un joven prodigio de la magia y la música.','$21','978-84-08-08790-6',2,23),
+    ('Lo que el viento se llevó', '1936', 'Una novela que se desarrolla durante la Guerra Civil estadounidense y la Reconstrucción, centrada en la vida de Scarlett O''Hara.','$25','978-84-450-7652-8',1,24),
+    ('El código Da Vinci',  '2003', 'Un thriller que combina arte, historia y religión en una trama de misterio y conspiración.','$27','978-84-08-07232-1',1,25);
+INSERT INTO Books (Names,PublicationDate,Description,Rent_value,ISBN,Feedback_id)
+    VALUES
+    ('La última Sultana','2023',' Morayma, hija del alcaide de Loja y primer mayordomo de la Alhambra, fue esposa de Boabdil, el último sultán del reino nazarí de Granada. Su vida, marcada por su belleza y por la tragedia, es la historia de quien nació sin estirpe y llegó a convertirse en la mujer más poderosa de la dinastía musulmana en uno de los periodos más convulsos.','$20', '9788413147413',6);
+----------------------------------------------------------------------
+
+-----------------------comentarios--------------------------------
+CREATE TABLE FeedBack (
+    FeedBack_id INTEGER NOT NULL PRIMARY KEY,
+    Qualification varchar (5),
+    Comment varchar(100),
+    Dates DATE,
+    User_Id INTEGER,
+    FOREIGN KEY (User_Id) REFERENCES Users(User_Id)
+);
+DROP TABLE FeedBack;
+INSERT INTO FeedBack (Qualification,Comment,Dates,User_Id)
+    VALUES
+    ('★★★','Its a good book to read in the night','1995-04-02',2),
+    ('★★','Is a good book but i dont read one more time','2000-06-30',2),
+    ('★','This book is really bad','1999-10-22',2);
+
+
+INSERT INTO FeedBack (Qualification,Comment,Dates,User_Id)
+    VALUES
+    ('★★★','Its a good book to read ','1995-04-02',3),
+    ('★★★','Its a good book to read ','1995-04-02',4),
+    ('★★','i will read one more time','2000-06-30',3),
+    ('★','is bad','1999-10-22',4);
+----------------------------------------------------------
+
+---------------------------Queries------------------------
+
+
+------------------------View----------------
+ CREATE VIEW Day_report AS
+ SELECT Rental_Date,User_id
+ FROM Orders
+ WHERE Rental_Date = '2023-09-27';
+
+
+ DROP VIEW Day_report;
+------------------------------------------------------------
+
+-------------------------------index-------------------------------
+CREATE INDEX Users_name
+ON UserData (name);
+
+--I chose to make the index with the name because many people have the same name--
+-------------------------------------------------------------
+------------------------------Trigger---------------------
+
+
+CREATE TRIGGER Update_inventory 
+AFTER
+UPDATE ON Orders BEGIN
+UPDATE InventoryBooks
+SET QuantityAvailable = QuantityAvailable -1
+WHERE Inventory_id IN ( 
+    SELECT InventoryBooks.Inventory_id FROM Orders
+    JOIN BookOrder ON Orders.Orders_id =  BookOrder.Orders_id
+    JOIN Books ON BookOrder.Books_id = Books.Books_id
+    JOIN InventoryBooks ON Books.Inventory_id =  InventoryBooks.Inventory_id
+    JOIN Order_State ON Order_State.order_state_id = Orders.order_state_id
+    WHERE Order_State.Order_State = 'Pending Delivery' OR Order_State.Order_State = 'For rent' AND Orders.Orders_id = New.Orders_id
+);
+END;
+
+DROP TRIGGER Update_inventory;
+
+
+-- CREATE TRIGGER count_books_available
+-- AFTER UPDATE 
+-- ON InventoryBooks
+-- FOR EACH ROW 
+-- BEGIN
+--     UPDATE InventoryBooks SET QuantityAvailable = QuantityAvailable -1 
+--     WHERE Inventory_id IN
+--     JOIN BookOrder ON Orders.Orders_id =  BookOrder.Orders_id
+--     SELECT Order_State_id FROM orders WHERE Order_State_id = 2 OR 3;
+-- END;
+
+
+
+
+-----------------------------los libros mejor calificados------------------------------------
+
+SELECT names FROM Books WHERE Feedback_id = 1;
+
+
+SELECT  Books.Names, FeedBack.Qualification
+FROM Books
+INNER JOIN FeedBack
+ON Books.Feedback_id = FeedBack.FeedBack_id
+WHERE FeedBack.Qualification= '★★★' OR FeedBack.Qualification= '★★'
+ORDER BY FeedBack.Qualification DESC;
+
+------------------------------------------------------------
+
+---------------------------mismo genero--------------------------
+
+SELECT Gender.Gender AS Gender,
+COUNT(*) AS Book_Count
+FROM GenderBooks
+JOIN Gender ON GenderBooks.Gender_id = Gender.Gender_id
+GROUP BY Gender.Gender;
+-----------------------------------------------------------------
+
+--------------------------buscar por nombres-------------------------
+SELECT Names from Books ;
+
+SELECT * 
+FROM Books
+WHERE Names LIKE 'H%';
+
+SELECT * 
+FROM Books
+WHERE Names LIKE 'El%';
+
+SELECT * 
+FROM Books
+WHERE Names LIKE '%viento';
+---------------------------------------------------------------------------
+
+
+----------------------------libros alquilados por usuario de email--------------------------------
+SELECT Books.Names, UserData.Email 
+FROM Books
+INNER JOIN UserData ON Books.Books_id = UserData.UserData_id
+INNER JOIN Orders ON Books.Books_id=Orders.User_id
+WHERE  Orders.Rental_Date= '2023-09-10'  ;
+
+
+
+----------------------------------------------------------------------------
+---------------------- el promedio de libros alquilados por día----------------------
+SELECT AVG(QuantityAvailable) AS AverageBooks
+FROM InventoryBooks
+WHERE AmountRented > 0;
+-------------------------------------------------------------------------------
+
+--------------------el libro más alquilado en el mes anterior-------------------
+
+SELECT Books.Names
+FROM Orders
+JOIN Books ON Orders.Orders_id = Books.Books_id
+GROUP BY Books.Names
+ORDER BY COUNT(*) DESC
+;
+
+------------------------------------------------------------------------------
+
+---------------------------Si el libro no esta en el inventario-------------------------------------
+SELECT Names AS BookNotInInventory
+FROM Books
+LEFT JOIN InventoryBooks ON Books_id = Inventory_id
+WHERE Inventory_id IS NULL; 
+
+SELECT Books.Books_id, Books.Names
+FROM Books
+LEFT JOIN InventoryBooks ON Books.Books_id = InventoryBooks.Inventory_id
+WHERE InventoryBooks.Inventory_id IS NULL;
+-------------------------------------------------------------------------------
+
+---------------------------------------tareas usuarios-------------------------------
+CREATE VIEW Shopping_Cart AS 
+SELECT Names, Rent_value FROM Books
+WHERE Books_id = 2 OR Books_id= 3 ;
+
+DROP VIEW  Shopping_Cart1;
+--------------------------------------chiping card--------------------------------------
+
+--------------------------------------------------------------------
+
+--------------------------insertar ordenes-------------------------------------
+INSERT INTO Orders (User_id,Order_State_id, Rental_Date, Return_Date)
+    SELECT 
+        2 AS User_id,
+        1 AS Order_State_id,
+        '2023-01-15' AS Rental_Date,
+        '2023-02-15' AS Return_Date
+    WHERE EXISTS (SELECT 1 FROM Users 
+    JOIN UsersTypes ut ON ut.UsersType_id = Users.UsersType_id
+    WHERE Users.User_id =2  AND ut.User_type = 'Clients'
+);
+
+-----------------------------dejar reseñas---------------------------------
+INSERT INTO FeedBack (User_Id,Dates,Qualification,Comment)
+    SELECT 
+        2 AS User_Id,
+        '2004-06-30' AS Dates,
+        '★★' AS Qualification,
+        'its a good book' AS Comment
+    WHERE EXISTS (SELECT 1 FROM Users 
+    JOIN UsersTypes ut ON ut.UsersType_id = Users.UsersType_id
+    WHERE Users.User_id =2  AND ut.User_type = 'Clients'
+);
+------------------------------------------------------------------------------------
+
+
+-----------------------------------tareas administradores---------------------------------------------
+
+CREATE TABLE Inventory_Users(
+    Inventory_id INTEGER,
+    User_id INTEGER,
+    FOREIGN KEY (Inventory_id) REFERENCES InventoryBooks(Inventory_id),
+    FOREIGN KEY (User_id) REFERENCES Users(User_id));
+
+INSERT INTO Inventory_Users
+    VALUES
+    (1,1);
+
+
+-----------------------------cambiar inventario--------------------------------------------
+UPDATE InventoryBooks
+SET QuantityAvailable = 10 
+WHERE EXISTS(SELECT 1 FROM Users 
+JOIN UsersTypes ut ON ut.UsersType_id = Users.UsersType_id
+WHERE Users.User_id =1  AND ut.User_type = 'admin' AND  Inventory_id = 1);
+--------------------------------------------------------------------------
+
+---------------------------------cambio del estado de las ordenes---------------------------------
+UPDATE Orders
+SET Order_State_id = 3
+WHERE EXISTS(SELECT 1 FROM Users 
+JOIN Orders o ON o.Order_State_id = Users.UsersType_id
+JOIN UsersTypes ut ON ut.UsersType_id = Users.UsersType_id
+WHERE Users.User_id = 1 AND ut.User_type = 'admin') AND Orders_id = 2 ;
+---------------------------------------------------------------------------------------
+
+---------------------------------mostar los comentarios-------------------------------------------
+DELETE FROM FeedBack
+WHERE EXISTS(SELECT 1 FROM Users 
+JOIN FeedBack fb ON fb.FeedBack_id = Users.UsersType_id
+JOIN UsersTypes ut ON ut.UsersType_id = Users.UsersType_id
+WHERE Users.User_id = 1 AND ut.User_type = 'admin') AND Comment = 'is bad' ;
+---------------------------------------------------------------------------------------------
+
+
